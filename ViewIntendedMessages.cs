@@ -75,8 +75,8 @@ namespace MassText
                      where status != MessageStatus.Delivered || status != MessageStatus.Sent
                      select status).Count ();
 
-            bundleStatus.Text = messages.repeatTime != TimeSpan.Zero ? (messages.repeat ? $"Scheduled Every {messages.repeatTime.Hours} Hours" : (DateTime.Now > messages.intendedTime.Add (messages.repeatTime) ? ((fails > 0 ? "Scheduled, Sent with errors" : "Sent")) : "Scheduled")) : (fails > 0 ? "Sent with errors" : "Sent");
-
+            bundleStatus.Text = messages.repeatTime != TimeSpan.Zero ? (messages.repeat ? $"Scheduled Every {messages.repeatTime}" : (DateTime.Now > messages.intendedTime.Add (messages.repeatTime) ? ((fails > 0 ? "Scheduled, Sent with errors" : "Sent")) : "Scheduled")) : (fails > 0 ? "Sent with errors" : "Sent");
+            bundleStatus.Text += $"{(messages.repeat ? "\nRepeating" : "")}";
             retryFailed.Click += (sender, args) =>
               {
                   if (fails > 0)
