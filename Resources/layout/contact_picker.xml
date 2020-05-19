@@ -1,0 +1,45 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:text="Select Contacts"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:drawableLeft="@drawable/magnify"
+        android:hint="Search..."
+        android:inputType="text"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="7.5dp"
+        android:id="@+id/contactListSearch"/>
+    <Button
+        android:text="@android:string/selectAll"
+        android:shadowRadius="1.1"
+        android:textColor="@android:color/black"
+        android:backgroundTint="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/selectAllButton"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minWidth="25px"
+        android:layout_weight="1"
+        android:minHeight="25px"
+        android:id="@+id/contactSelectionList" />
+    <Button
+        android:text="Proceed"
+        android:backgroundTint="@color/material_deep_teal_500"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/proceedButton"/>
+</LinearLayout>

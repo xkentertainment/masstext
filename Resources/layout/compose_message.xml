@@ -1,0 +1,41 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_margin="20dp"
+        android:text="Compose Your Message"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <AutoCompleteTextView
+        android:layout_marginTop="15dp"
+        android:id="@+id/messageField"
+        android:hint="Your message here"
+        android:layout_width="match_parent"
+        android:inputType="textShortMessage"
+        android:singleLine="false"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="SCHEDULE"
+        android:id="@+id/composeMessageSendBUtton"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/material_deep_teal_500"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:text="Messages"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/contactList" />
+</LinearLayout>
