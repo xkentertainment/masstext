@@ -106,7 +106,7 @@ namespace MassText
             {
                 sendNowButton.Background.SetColorFilter (Color.Black, PorterDuff.Mode.SrcAtop);
                 discard.Background.SetColorFilter (Color.DarkRed, PorterDuff.Mode.SrcAtop);
-                scheduleButton.Background.SetColorFilter (Resources.GetColor (Resource.Color.material_deep_teal_500), PorterDuff.Mode.SrcAtop);
+                scheduleButton.Background.SetColorFilter (Color.Teal, PorterDuff.Mode.SrcAtop);
                 sendBySchedule.Background.SetColorFilter (Color.White, PorterDuff.Mode.SrcAtop);
             }
 

@@ -72,7 +72,7 @@ namespace MassText
 
             if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
             {
-                sendButton.Background.SetColorFilter (Resources.GetColor (Resource.Color.material_deep_teal_200), PorterDuff.Mode.SrcAtop);
+                sendButton.Background.SetColorFilter (Color.Teal, PorterDuff.Mode.SrcAtop);
             }
 
             sendButton.Click += (sender, args) =>

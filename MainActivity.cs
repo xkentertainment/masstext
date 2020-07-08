@@ -30,61 +30,81 @@ namespace MassText
         ProgressBar progressBar;
         protected override void OnCreate (Bundle savedInstanceState)
         {
-            Xamarin.Essentials.Platform.Init (Application);
             base.OnCreate (savedInstanceState);
+            Xamarin.Essentials.Platform.Init (Application);
+            try
+            {
 
-            inContactSelection = false;
-            StorageManager.ClearCache (nameof (MainActivity));
-            StorageManager.ClearCache (nameof (ComposeMessage));
-
+                inContactSelection = false;
+                StorageManager.ClearCache (nameof (MainActivity));
+                StorageManager.ClearCache (nameof (ComposeMessage));
+            }
+            catch (Exception e)
+            {
+                Toast.MakeText (this, e.Message, ToastLength.Long).Show ();
+            }
             //Init ();
         }
         void Init ()
         {
-            if (loading)
+            try
             {
-                loading = false;
-                return;
-            }
+                if (loading)
+                {
+                    loading = false;
+                    return;
+                }
 
-            SetContentView (Resource.Layout.activity_main);
+                SetContentView (Resource.Layout.activity_main);
 
-            openExcelButton = FindViewById (Resource.Id.importExcelFromDeviceButton) as Button;
+                openExcelButton = FindViewById (Resource.Id.importExcelFromDeviceButton) as Button;
 
-            openExcelButton.Click += (sender, args) => { InitImport (false); };
+                openExcelButton.Click += (sender, args) => { InitImport (false); };
 
-            progressBar = FindViewById (Resource.Id.importProgressBar) as ProgressBar;
-            openLogsButton = FindViewById (Resource.Id.viewLogsButton) as Button;
-            openLogsButton.Click += (sender, args) =>
-            {
-                StartActivity (typeof (Logs));
-            };
+                progressBar = FindViewById (Resource.Id.importProgressBar) as ProgressBar;
+                openLogsButton = FindViewById (Resource.Id.viewLogsButton) as Button;
+                openLogsButton.Click += (sender, args) =>
+                {
+                    StartActivity (typeof (Logs));
+                };
 
-            getFromContacts = FindViewById (Resource.Id.importContactFromDeviceButton) as Button;
-            getFromContacts.Click += (sender, args) =>
-            {
-                InitImport (true);
-            };
-            PowerManager man = (GetSystemService (PowerService) as PowerManager);
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.M && !man.IsIgnoringBatteryOptimizations (PackageName))
-            {
-                Snackbar.Make (openExcelButton.Parent as View, "Please allow ignoring of battery optimization in order to use proper scheduling", Snackbar.LengthIndefinite)
-                    .SetAction ("OK",
-                    (args) =>
+                getFromContacts = FindViewById (Resource.Id.importContactFromDeviceButton) as Button;
+                getFromContacts.Click += (sender, args) =>
+                {
+                    InitImport (true);
+                };
+                try
+                {
+                    PowerManager man = (GetSystemService (PowerService) as PowerManager);
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop && !man.IsIgnoringBatteryOptimizations (PackageName))
                     {
-                        Android.Content.Intent intent = new Intent ();
-                        intent.SetAction (Settings.ActionRequestIgnoreBatteryOptimizations);
-                        intent.SetData (Android.Net.Uri.Parse ("package:" + PackageName));
-                        StartActivityForResult (intent, 104);
-                    })
-                    .Show ();
-            }
+                        Snackbar.Make (openExcelButton.Parent as View, "Please allow ignoring of battery optimization in order to use proper scheduling", Snackbar.LengthIndefinite)
+                            .SetAction ("OK",
+                            (args) =>
+                            {
+                                Intent intent = new Intent ();
+                                intent.SetAction (Settings.ActionRequestIgnoreBatteryOptimizations);
+                                intent.SetData (Android.Net.Uri.Parse ("package:" + PackageName));
+                                StartActivityForResult (intent, 104);
+                            })
+                            .Show ();
+                    }
+                }
+                catch
+                {
 
-            if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
+                }
+                if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
+                {
+
+                    openExcelButton.Background.SetColorFilter (Color.Teal, PorterDuff.Mode.SrcAtop);
+                    getFromContacts.Background.SetColorFilter (Color.White, PorterDuff.Mode.SrcAtop);
+                    openLogsButton.Background.SetColorFilter (Color.Black, PorterDuff.Mode.SrcAtop);
+                }
+            }
+            catch(Exception e)
             {
-                openExcelButton.Background.SetColorFilter (Resources.GetColor (Resource.Color.material_deep_teal_500), PorterDuff.Mode.SrcAtop);
-                getFromContacts.Background.SetColorFilter (Color.White, PorterDuff.Mode.SrcAtop);
-                openLogsButton.Background.SetColorFilter (Color.Black, PorterDuff.Mode.SrcAtop);
+                Toast.MakeText (this, e.Message, ToastLength.Long).Show ();
             }
         }
         const int getContentRequest = 101;
@@ -126,20 +146,23 @@ namespace MassText
                             }
                             else
                             {
-                                if (queriedContacts.Count > 0)
-                                {
+                                Init ();
                                     Snackbar.Make (openExcelButton.Parent as View, "No Contacts found", Snackbar.LengthLong).Show ();
-                                }
+                                
                             }
                         });
                     });
                 }
             }
-            bool hasPerms () => (Android.Support.V4.Content.ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReadExternalStorage) == (int)Permission.Granted
-             && Android.Support.V4.Content.ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.SendSms) == (int)Permission.Granted
-             && Android.Support.V4.Content.ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReceiveSms) == (int)Permission.Granted
-             && Android.Support.V4.Content.ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReadContacts) == (int)Permission.Granted
-             && Android.Support.V4.Content.ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.WriteSms) == (int)Permission.Granted);
+            bool hasPerms ()
+            {
+                return ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReadExternalStorage) == (int)Permission.Granted
+                && ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.SendSms) == (int)Permission.Granted
+                && ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReceiveSms) == (int)Permission.Granted
+                && ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.ReadContacts) == (int)Permission.Granted
+                && ContextCompat.CheckSelfPermission (this, Android.Manifest.Permission.WriteSms) == (int)Permission.Granted;
+            }
+
             if (hasPerms ())
             {
                 Start ();
@@ -226,8 +249,8 @@ namespace MassText
 
             if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
             {
-                proceedButton.Background.SetColorFilter (Resources.GetColor (Resource.Color.material_deep_teal_200), PorterDuff.Mode.SrcAtop);
-                selectAllButton.Background.SetColorFilter (Color.White, PorterDuff.Mode.SrcAtop);
+                proceedButton.Background.SetColorFilter (Color.Teal, PorterDuff.Mode.SrcAtop);
+                selectAllButton.Background.SetColorFilter (Color.AliceBlue, PorterDuff.Mode.SrcAtop);
             }
             contactDisplays = new List<string> ();
             SetContactDisplays ((queriedContacts, null));
@@ -340,9 +363,10 @@ namespace MassText
             return (results, toggles);
         }
 
-        List<Contact> queriedContacts = new List<Contact> ();
+        List<Contact> queriedContacts;
         void QueryContacts()
         {
+            queriedContacts = new List<Contact> ();
             ContentResolver cr = ContentResolver;
             ICursor cur = cr.Query (ContactsContract.Contacts.ContentUri, null, null, null, null);
 
